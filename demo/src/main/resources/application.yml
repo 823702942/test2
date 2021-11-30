@@ -1,0 +1,70 @@
+
+spring:
+  flyway:
+    #sql 脚本的目录，默认是 classpath:db/migration，如果有多个，用英文逗号隔开
+    locations: classpath:db/sqlserver
+    #字符编码
+    encoding: UTF-8
+    #是否开启 flyway，默认开启
+    enabled: true
+    #是否禁用mvn flyway:clean命令
+    clean-disabled: false
+    #配置数据库信息表的名称，默认是 flyway_schema_history
+    table: flyway_schema_history
+    #如果数据里包含了其他表,但没有 flyway schema history 表的话,需要加入此配置
+    baseline-on-migrate: true
+    # 指定 baseline 的版本号,默认值为 1, 低于该版本号的 SQL 文件, migrate 时会被忽略
+    baseline-version: 1
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1;DatabaseName=flywaytest;InstanceName=MSSQLSERVER
+    username: ls
+    password: 123456
+  #对于rabbitMQ的支持
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: dsfd
+    password: dsfd
+    #消费者数量
+    listener:
+      simple:
+        concurrency: 1
+        #最大消费者数量
+        max-concurrency: 10
+        #消费者每次从队列获取的消息数量。若数量多，如果长时间得不到消费，数据就一直得不到处理
+        prefetch: 1
+        #消费者自动启动
+        auto-startup: true
+        #消费者消费失败，自动重新入队
+        default-requeue-rejected: true
+        #采用手动应答
+        acknowledge-mode: manual
+    #启用发送重试 队列满了发不进去时启动重试
+    template:
+      retry:
+        enabled: true
+        #1秒钟后重试一次
+        initial-interval: 1000
+        #最大重试次数 3次
+        max-attempts: 2
+        #最大间隔 10秒钟
+        max-interval: 10000
+        #等待间隔 的倍数。如果为2  第一次 乘以2 等1秒， 第二次 乘以2 等2秒 ，第三次 乘以2 等4秒
+        multiplier: 1
+    #消息发送到交换机确认机制，是否返回回调
+    publisher-returns: true
+    virtual-host: dhcc
+
+
+server:
+  port: 8888
+  servlet:
+    context-path: /demo
+logging:
+  config: classpath:logback.xml
+ds:
+  dsType: dbsqlserver
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

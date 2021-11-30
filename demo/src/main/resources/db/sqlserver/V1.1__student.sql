@@ -1,0 +1,6 @@
+create table student2
+(
+    STUDENT_ID   VARCHAR(30) PRIMARY KEY,
+    STUDENT_NAME NVARCHAR(50),
+    CLASS_NO     VARCHAR(10)
+);
